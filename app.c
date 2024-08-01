@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #define MAX_PATIENTS 100
 
@@ -94,6 +95,11 @@ void viewPatientDetails(int id) {
 }
 
 void listAllPatients() {
+    if (patientCount == 0) {
+        printf("No patients to list.\n");
+        return;
+    }
+
     printf("Listing all patients:\n");
     for (int i = 0; i < patientCount; i++) {
         printf("Patient ID: %d\n", patients[i].id);
@@ -136,10 +142,14 @@ void displayStatistics() {
     printf("Average age of patients: %.2f\n", (float)totalAge / patientCount);
 }
 
+void clearInputBuffer() {
+    while (getchar() != '\n');
+}
+
 int main() {
     int choice, id, age;
     char name[50], gender[10], diagnosis[100];
-    
+
     while (1) {
         printf("\nHospital Management System\n");
         printf("1. Add Patient\n");
@@ -151,55 +161,96 @@ int main() {
         printf("7. Display Statistics\n");
         printf("8. Exit\n");
         printf("Enter your choice: ");
-        scanf("%d", &choice);
         
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input. Please enter a number.\n");
+            clearInputBuffer();
+            continue;
+        }
+
         switch (choice) {
             case 1:
                 printf("Enter Patient ID: ");
-                scanf("%d", &id);
+                if (scanf("%d", &id) != 1 || id <= 0) {
+                    printf("Invalid ID. Please enter a positive number.\n");
+                    clearInputBuffer();
+                    break;
+                }
                 if (!isIdValid(id)) {
                     printf("Patient ID %d already exists.\n", id);
                     break;
                 }
+                clearInputBuffer();
                 printf("Enter Patient Name: ");
-                scanf("%s", name);
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;
                 printf("Enter Patient Age: ");
-                scanf("%d", &age);
+                if (scanf("%d", &age) != 1 || age <= 0) {
+                    printf("Invalid age. Please enter a positive number.\n");
+                    clearInputBuffer();
+                    break;
+                }
+                clearInputBuffer();
                 printf("Enter Patient Gender: ");
-                scanf("%s", gender);
+                fgets(gender, sizeof(gender), stdin);
+                gender[strcspn(gender, "\n")] = 0;
                 printf("Enter Patient Diagnosis: ");
-                scanf("%s", diagnosis);
+                fgets(diagnosis, sizeof(diagnosis), stdin);
+                diagnosis[strcspn(diagnosis, "\n")] = 0;
                 addPatient(id, name, age, gender, diagnosis);
                 break;
             case 2:
                 printf("Enter Patient ID: ");
-                scanf("%d", &id);
+                if (scanf("%d", &id) != 1 || id <= 0) {
+                    printf("Invalid ID. Please enter a positive number.\n");
+                    clearInputBuffer();
+                    break;
+                }
+                clearInputBuffer();
                 printf("Enter Patient Name: ");
-                scanf("%s", name);
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;
                 printf("Enter Patient Age: ");
-                scanf("%d", &age);
+                if (scanf("%d", &age) != 1 || age <= 0) {
+                    printf("Invalid age. Please enter a positive number.\n");
+                    clearInputBuffer();
+                    break;
+                }
+                clearInputBuffer();
                 printf("Enter Patient Gender: ");
-                scanf("%s", gender);
+                fgets(gender, sizeof(gender), stdin);
+                gender[strcspn(gender, "\n")] = 0;
                 printf("Enter Patient Diagnosis: ");
-                scanf("%s", diagnosis);
+                fgets(diagnosis, sizeof(diagnosis), stdin);
+                diagnosis[strcspn(diagnosis, "\n")] = 0;
                 updatePatient(id, name, age, gender, diagnosis);
                 break;
             case 3:
                 printf("Enter Patient ID to delete: ");
-                scanf("%d", &id);
+                if (scanf("%d", &id) != 1 || id <= 0) {
+                    printf("Invalid ID. Please enter a positive number.\n");
+                    clearInputBuffer();
+                    break;
+                }
                 deletePatient(id);
                 break;
             case 4:
                 printf("Enter Patient ID to view details: ");
-                scanf("%d", &id);
+                if (scanf("%d", &id) != 1 || id <= 0) {
+                    printf("Invalid ID. Please enter a positive number.\n");
+                    clearInputBuffer();
+                    break;
+                }
                 viewPatientDetails(id);
                 break;
             case 5:
                 listAllPatients();
                 break;
             case 6:
+                clearInputBuffer();
                 printf("Enter Patient Name to search: ");
-                scanf("%s", name);
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;
                 searchPatientByName(name);
                 break;
             case 7:
@@ -211,6 +262,6 @@ int main() {
                 printf("Invalid choice. Please try again.\n");
         }
     }
-    
+
     return 0;
 }
