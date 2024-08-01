@@ -61,11 +61,18 @@ void updatePatient(int id, const char *name, int age, const char *gender, const 
 void deletePatient(int id) {
     for (int i = 0; i < patientCount; i++) {
         if (patients[i].id == id) {
-            for (int j = i; j < patientCount - 1; j++) {
-                patients[j] = patients[j + 1];
+            char confirm;
+            printf("Are you sure you want to delete Patient ID %d? (y/n): ", id);
+            scanf(" %c", &confirm);
+            if (confirm == 'y' || confirm == 'Y') {
+                for (int j = i; j < patientCount - 1; j++) {
+                    patients[j] = patients[j + 1];
+                }
+                patientCount--;
+                printf("Patient ID %d deleted successfully.\n", id);
+            } else {
+                printf("Deletion cancelled.\n");
             }
-            patientCount--;
-            printf("Patient ID %d deleted successfully.\n", id);
             return;
         }
     }
@@ -132,6 +139,7 @@ void displayStatistics() {
 int main() {
     int choice, id, age;
     char name[50], gender[10], diagnosis[100];
+    
     while (1) {
         printf("\nHospital Management System\n");
         printf("1. Add Patient\n");
@@ -144,6 +152,7 @@ int main() {
         printf("8. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
+        
         switch (choice) {
             case 1:
                 printf("Enter Patient ID: ");
@@ -202,5 +211,6 @@ int main() {
                 printf("Invalid choice. Please try again.\n");
         }
     }
+    
     return 0;
 }
