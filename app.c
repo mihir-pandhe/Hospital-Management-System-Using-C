@@ -27,9 +27,41 @@ void addPatient(int id, const char *name, int age, const char *gender, const cha
     }
 }
 
+void updatePatient(int id, const char *name, int age, const char *gender, const char *diagnosis) {
+    for (int i = 0; i < patientCount; i++) {
+        if (patients[i].id == id) {
+            strcpy(patients[i].name, name);
+            patients[i].age = age;
+            strcpy(patients[i].gender, gender);
+            strcpy(patients[i].diagnosis, diagnosis);
+            printf("Patient ID %d updated.\n", id);
+            return;
+        }
+    }
+    printf("Patient ID %d not found.\n", id);
+}
+
+void deletePatient(int id) {
+    for (int i = 0; i < patientCount; i++) {
+        if (patients[i].id == id) {
+            for (int j = i; j < patientCount - 1; j++) {
+                patients[j] = patients[j + 1];
+            }
+            patientCount--;
+            printf("Patient ID %d deleted.\n", id);
+            return;
+        }
+    }
+    printf("Patient ID %d not found.\n", id);
+}
+
 int main() {
     addPatient(1, "John Doe", 30, "Male", "Flu");
     addPatient(2, "Jane Smith", 25, "Female", "Cold");
+
+    updatePatient(1, "John Doe", 31, "Male", "Recovered from Flu");
+
+    deletePatient(2);
 
     for (int i = 0; i < patientCount; i++) {
         printf("Patient ID: %d\n", patients[i].id);
